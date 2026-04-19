@@ -5,18 +5,33 @@ export default function Home() {
   const [output, setOutput] = useState("");
 
   const runAnalysis = async () => {
+    console.log("CLICK WORKING");
+
     setOutput("Running analysis...");
 
-    const res = await fetch("/api/analyze", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ prompt: input })
-    });
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          prompt: input
+        })
+      });
 
-    const data = await res.json();
-    setOutput(data.result);
+      console.log("RESPONSE STATUS:", res.status);
+
+      const data = await res.json();
+
+      console.log("API RESPONSE:", data);
+
+      setOutput(data.result || "No result returned");
+
+    } catch (error) {
+      console.error("ERROR:", error);
+      setOutput("Error running analysis");
+    }
   };
 
   return (
