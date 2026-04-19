@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).end();
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { prompt } = req.body;
@@ -29,13 +29,14 @@ ${prompt}`
 
     const data = await response.json();
 
-    const result =
-      data.output?.[0]?.content?.[0]?.text ||
-      "No response";
+    console.log("OPENAI RAW RESPONSE:", JSON.stringify(data, null, 2));
+
+    const result = data.output_text || "No output received";
 
     res.status(200).json({ result });
 
   } catch (error) {
+    console.error("BACKEND ERROR:", error);
     res.status(500).json({ error: error.message });
   }
 }
