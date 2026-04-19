@@ -4,13 +4,15 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
-  const handleSubmit = async () => {
-    const res = await fetch("/api/copilot", {
+  const runAnalysis = async () => {
+    setOutput("Running analysis...");
+
+    const res = await fetch("/api/analyze", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ input })
+      body: JSON.stringify({ prompt: input })
     });
 
     const data = await res.json();
@@ -18,22 +20,29 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: 40 }}>
+    <div style={{ padding: "50px", fontFamily: "Arial" }}>
       <h1>ControlAI Copilot</h1>
 
       <textarea
-        rows={5}
-        cols={60}
+        style={{ width: "100%", height: "120px" }}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Describe your scenario..."
+        placeholder="Describe your AI use case..."
       />
 
       <br /><br />
 
-      <button onClick={handleSubmit}>Run Analysis</button>
+      <button onClick={runAnalysis}>
+        Run Analysis
+      </button>
 
-      <pre>{output}</pre>
+      <div style={{
+        marginTop: "30px",
+        padding: "20px",
+        border: "1px solid #ddd"
+      }}>
+        {output}
+      </div>
     </div>
   );
 }
