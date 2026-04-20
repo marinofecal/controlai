@@ -24,13 +24,27 @@ export default function Home() {
       }
 
       setOutput(`
-Risk: ${data.detected_risk}
+AI ACT PRELIMINARY ASSESSMENT
+-------------------------------------
 
-Summary: ${data.summary}
+Risk Classification: ${data.detected_risk}
 
-Recommendations:
-- ${data.recommendations.join("\n- ")}
-      `);
+Business Interpretation:
+Your current AI usage has been classified based on the provided description. This classification reflects potential regulatory exposure under the EU AI Act.
+
+Key Considerations:
+- Even low-risk AI systems should be documented
+- Internal visibility of AI usage is expected
+- Scaling AI usage may increase regulatory obligations
+
+Recommended Actions:
+- Maintain documentation of the AI system and its purpose
+- Monitor how outputs influence decisions
+- Ensure transparency where applicable
+
+Conclusion:
+At this stage, your AI usage presents limited regulatory risk. However, implementing early governance practices will reduce future compliance costs and risks.
+`);
     } catch (error) {
       console.error(error);
       setOutput("Error running analysis");
@@ -46,6 +60,7 @@ Recommendations:
         cols="80"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        placeholder="Describe your AI use case..."
       />
 
       <br /><br />
