@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Solo permitir POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -7,12 +6,10 @@ export default async function handler(req, res) {
   try {
     const { input } = req.body;
 
-    // Validación básica
     if (!input || input.trim() === "") {
       return res.status(400).json({ error: "No input provided" });
     }
 
-    // 🔎 Lógica básica (simulación AI Act)
     let riskLevel = "Minimal Risk";
     let recommendations = [];
 
@@ -30,23 +27,24 @@ export default async function handler(req, res) {
         "Maintain detailed documentation"
       );
     } else if (
-      text.includes("hr") ||
       text.includes("recruitment") ||
+      text.includes("hiring") ||
+      text.includes("cv") ||
       text.includes("credit scoring")
     ) {
       riskLevel = "High Risk";
       recommendations.push(
         "Implement risk management system",
-        "Ensure data quality and governance",
-        "Enable human review of decisions"
+        "Ensure data governance",
+        "Enable human oversight in decisions"
       );
     } else if (
       text.includes("chatbot") ||
-      text.includes("ai assistant")
+      text.includes("assistant")
     ) {
       riskLevel = "Limited Risk";
       recommendations.push(
-        "Ensure transparency (inform users it's AI)",
+        "Ensure transparency to users",
         "Avoid misleading outputs"
       );
     } else {
@@ -57,18 +55,14 @@ export default async function handler(req, res) {
       );
     }
 
-    // 📦 Respuesta estructurada
-    const result = {
-      company_size: "SME",
+    return res.status(200).json({
       detected_risk: riskLevel,
       summary: "Preliminary AI Act classification based on input description.",
-      recommendations: recommendations,
-    };
-
-    return res.status(200).json(result);
+      recommendations,
+    });
 
   } catch (error) {
-    console.error("API ERROR:", error);
+    console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }
