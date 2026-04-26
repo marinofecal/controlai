@@ -1,3 +1,10 @@
+/**
+ * COMPLIANCE AI - EXPORT API ENDPOINT
+ * pages/api/export.js
+ * 
+ * Handles exporting analysis to PDF, DOCX, or JSON
+ */
+
 import { exportPDF, exportDOCX, exportJSON } from '@/lib/export';
 
 export default async function handler(req, res) {
