@@ -1,11 +1,4 @@
-/**
- * COMPLIANCE AI - EXPORT API ENDPOINT
- * pages/api/export.js
- * 
- * Handles exporting analysis to PDF, DOCX, or JSON
- */
-
-import { exportPDF, exportDOCX, exportJSON } from '@/lib/export';
+// Export Analysis Results API
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -13,38 +6,33 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { analysis, format = 'pdf' } = req.body;
+    const { caseId, format = 'pdf' } = req.body;
 
-    if (!analysis) {
-      return res.status(400).json({ error: 'Analysis data required' });
+    if (!caseId) {
+      return res.status(400).json({ error: 'Case ID is required' });
     }
 
-    let buffer;
-    let contentType;
-    let filename;
+    // Mock export response
+    const exportData = {
+      caseId,
+      format,
+      filename: `compliance-report-${caseId}.${format}`,
+      size: Math.floor(Math.random() * 5000) + 1000,
+      url: `/exports/${caseId}.${format}`,
+      generated: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+    };
 
-    if (format === 'pdf') {
-      buffer = await exportPDF(analysis);
-      contentType = 'application/pdf';
-      filename = `compliance-report-${new Date().toISOString().split('T')[0]}.pdf`;
-    } else if (format === 'docx') {
-      buffer = await exportDOCX(analysis);
-      contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      filename = `compliance-report-${new Date().toISOString().split('T')[0]}.docx`;
-    } else if (format === 'json') {
-      const json = exportJSON(analysis);
-      buffer = Buffer.from(json);
-      contentType = 'application/json';
-      filename = `compliance-report-${new Date().toISOString().split('T')[0]}.json`;
-    } else {
-      return res.status(400).json({ error: 'Invalid format' });
-    }
+    return res.status(200).json({
+      success: true,
+      export: exportData
+    });
 
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.send(buffer);
   } catch (error) {
-    console.error('Export error:', error);
-    res.status(500).json({ error: 'Export failed' });
+    console.error('[Export Error]', error);
+    return res.status(500).json({
+      error: 'Export failed',
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
   }
 }
